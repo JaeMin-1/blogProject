@@ -1,4 +1,4 @@
-package org.example.blogproject.global.model;
+package org.example.blogproject.global.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

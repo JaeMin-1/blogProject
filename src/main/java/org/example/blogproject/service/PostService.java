@@ -1,11 +1,12 @@
 package org.example.blogproject.service;
 
 import java.util.Optional;
-import org.example.blogproject.converter.PostConverter;
+import org.example.blogproject.global.converter.PostConverter;
 import org.example.blogproject.global.exceptions.PostException;
 import org.example.blogproject.global.types.PostErrorType;
 import org.example.blogproject.model.entity.Post;
 import org.example.blogproject.model.request.PostRequest;
+import org.example.blogproject.model.response.PostResponse;
 import org.example.blogproject.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,28 +24,31 @@ public class PostService {
     this.postConverter = postConverter;
   }
 
-  public Page<Post> getAllPosts(Pageable pageable, String searchTerm, String category) {
+  public Page<PostResponse> getAllPosts(Pageable pageable, String searchTerm, String category) {
+    Page<Post> posts;
     // 검색어와 카테고리가 모두 없는 경우: 모든 포스트를 페이징하여 반환
     if (searchTerm == null && category == null) {
-      return postRepository.findAll(pageable);
+      posts = postRepository.findAll(pageable);
     }
     // 카테고리만 있는 경우: 카테고리별로 포스트를 페이징하여 반환
     else if (category != null && (searchTerm == null || searchTerm.isEmpty())) {
-      return postRepository.findByCategory(category, pageable);
+      posts = postRepository.findByCategory(category, pageable);
     }
     // 검색어와 카테고리가 모두 있는 경우: 검색어와 카테고리 둘 다 조건에 맞는 포스트를 페이징하여 반환
     else if (category != null) {
-      return postRepository.searchByCategory(searchTerm, category, pageable);
+      posts = postRepository.searchByCategory(searchTerm, category, pageable);
     }
     // 검색어만 있는 경우: 검색어 조건에 맞는 포스트를 페이징하여 반환
     else {
-      return postRepository.search(searchTerm, pageable);
+      posts = postRepository.search(searchTerm, pageable);
     }
+    return posts.map(postConverter::convertToResponse);
   }
 
-  public Post getPostById(Long id) {
-    return postRepository.findById(id)
+  public PostResponse getPostById(Long id) {
+    Post post = postRepository.findById(id)
         .orElseThrow(() -> new PostException(PostErrorType.POST_NOT_FOUND));
+    return postConverter.convertToResponse(post);
   }
 
   public Post createPost(PostRequest postRequest) {

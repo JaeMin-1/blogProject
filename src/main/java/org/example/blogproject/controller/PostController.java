@@ -4,6 +4,7 @@ import org.example.blogproject.model.entity.Post;
 import org.example.blogproject.model.request.PostRequest;
 import org.example.blogproject.global.utils.ResponseUtil;
 import org.example.blogproject.global.utils.ValidationUtil;
+import org.example.blogproject.model.response.PostResponse;
 import org.example.blogproject.service.PostService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +25,7 @@ public class PostController {
   }
 
   @GetMapping
-  public Page<Post> getAllPosts(
+  public Page<PostResponse> getAllPosts(
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
       @RequestParam(defaultValue = "createdAt") String sortBy,
@@ -41,9 +42,9 @@ public class PostController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Post> getPostById(@PathVariable Long id) {
-    Post post = postService.getPostById(id);
-    return ResponseUtil.ok(post);
+  public ResponseEntity<PostResponse> getPostById(@PathVariable Long id) {
+    PostResponse postResponse = postService.getPostById(id);
+    return ResponseUtil.ok(postResponse);
   }
 
   @PostMapping

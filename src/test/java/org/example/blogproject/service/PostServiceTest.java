@@ -13,10 +13,11 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.example.blogproject.converter.PostConverter;
+import org.example.blogproject.global.converter.PostConverter;
 import org.example.blogproject.global.exceptions.PostException;
 import org.example.blogproject.model.entity.Post;
 import org.example.blogproject.model.request.PostRequest;
+import org.example.blogproject.model.response.PostResponse;
 import org.example.blogproject.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,7 @@ public class PostServiceTest {
 
   private Post post;
   private PostRequest postRequest;
+  private PostResponse postResponse;
 
   @BeforeEach
   public void setUp() {
@@ -54,6 +56,16 @@ public class PostServiceTest {
         "Updated Content",
          "Updated Author",
         "Updated Category");
+
+    postResponse = new PostResponse(
+        post.getId(),
+        post.getTitle(),
+        post.getContent(),
+        post.getAuthor(),
+        post.getCategory(),
+        post.getViewCount(),
+        post.getCreatedAt(),
+        post.getModifiedAt());
   }
 
   @Test
@@ -67,7 +79,7 @@ public class PostServiceTest {
     when(postRepository.findAll(pageable)).thenReturn(page);
 
     // Then
-    Page<Post> result = postService.getAllPosts(pageable, null, null);
+    Page<PostResponse> result = postService.getAllPosts(pageable, null, null);
 
     assertEquals(1, result.getTotalElements());
     verify(postRepository, times(1)).findAll(pageable);
@@ -77,13 +89,14 @@ public class PostServiceTest {
   public void testGetPostById() {
     // Given
     when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
+    when(postConverter.convertToResponse(any(Post.class))).thenReturn(postResponse);
 
     // When
-    Post result = postService.getPostById(1L);
+    PostResponse result = postService.getPostById(1L);
 
     // Then
     assertNotNull(result);
-    assertEquals(post.getTitle(), result.getTitle());
+    assertEquals(post.getTitle(), result.title());
     verify(postRepository, times(1)).findById(anyLong());
   }
 
