@@ -74,6 +74,32 @@ public class PostServiceTest {
   }
 
   @Test
+  public void testGetPostById() {
+    // Given
+    when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
+
+    // When
+    Post result = postService.getPostById(1L);
+
+    // Then
+    assertNotNull(result);
+    assertEquals(post.getTitle(), result.getTitle());
+    verify(postRepository, times(1)).findById(anyLong());
+  }
+
+  @Test
+  public void testGetPostById_NotFound() {
+    // Given
+    when(postRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+    // When & Then
+    PostException exception = assertThrows(PostException.class, () -> postService.getPostById(1L));
+    assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+    assertEquals("해당 ID의 게시물을 찾을 수 없습니다.", exception.getStatusText());
+    verify(postRepository, times(1)).findById(anyLong());
+  }
+
+  @Test
   public void testCreatePost() {
     // Given
     when(postConverter.convertToEntity(any(PostRequest.class))).thenReturn(post);

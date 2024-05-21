@@ -42,6 +42,11 @@ public class PostService {
     }
   }
 
+  public Post getPostById(Long id) {
+    return postRepository.findById(id)
+        .orElseThrow(() -> new PostException(PostErrorType.POST_NOT_FOUND));
+  }
+
   public Post createPost(PostRequest postRequest) {
     Post post = postConverter.convertToEntity(postRequest);
     return postRepository.save(post);

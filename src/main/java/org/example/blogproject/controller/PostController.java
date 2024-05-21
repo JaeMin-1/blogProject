@@ -40,6 +40,12 @@ public class PostController {
     return postService.getAllPosts(pageable, searchTerm, category);
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<Post> getPostById(@PathVariable Long id) {
+    Post post = postService.getPostById(id);
+    return ResponseUtil.ok(post);
+  }
+
   @PostMapping
   public ResponseEntity<Post> createPost(@RequestBody PostRequest postRequest) {
     ValidationUtil.validatePostRequest(postRequest);
