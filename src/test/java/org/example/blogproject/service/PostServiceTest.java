@@ -1,19 +1,13 @@
 package org.example.blogproject.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.example.blogproject.global.converter.PostConverter;
+
 import org.example.blogproject.global.exceptions.PostException;
 import org.example.blogproject.model.entity.Post;
 import org.example.blogproject.model.request.PostRequest;
@@ -35,9 +29,6 @@ public class PostServiceTest {
   @Mock
   private PostRepository postRepository;
 
-  @Mock
-  private PostConverter postConverter;
-
   @InjectMocks
   private PostService postService;
 
@@ -52,9 +43,9 @@ public class PostServiceTest {
     post = new Post(1L,"Title", "Content", "Author", "Category", 0);
 
     postRequest = new PostRequest(
-           "Updated Title",
+        "Updated Title",
         "Updated Content",
-         "Updated Author",
+        "Updated Author",
         "Updated Category");
 
     postResponse = new PostResponse(
@@ -89,7 +80,6 @@ public class PostServiceTest {
   public void testGetPostById() {
     // Given
     when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
-    when(postConverter.convertToResponse(any(Post.class))).thenReturn(postResponse);
 
     // When
     PostResponse result = postService.getPostById(1L);
@@ -115,7 +105,6 @@ public class PostServiceTest {
   @Test
   public void testCreatePost() {
     // Given
-    when(postConverter.convertToEntity(any(PostRequest.class))).thenReturn(post);
     when(postRepository.save(any(Post.class))).thenReturn(post);
 
     // When

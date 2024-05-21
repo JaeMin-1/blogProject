@@ -1,7 +1,6 @@
 package org.example.blogproject.service;
 
 import java.util.Optional;
-import org.example.blogproject.global.converter.PostConverter;
 import org.example.blogproject.global.exceptions.PostException;
 import org.example.blogproject.global.types.PostErrorType;
 import org.example.blogproject.model.entity.Post;
@@ -17,13 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostService {
 
   private final PostRepository postRepository;
-  private final PostConverter postConverter;
 
-  public PostService(PostRepository postRepository, PostConverter postConverter) {
+  public PostService(PostRepository postRepository) {
     this.postRepository = postRepository;
-    this.postConverter = postConverter;
   }
 
+  @Transactional(readOnly = true)
   public Page<PostResponse> getAllPosts(Pageable pageable, String searchTerm, String category) {
     Page<Post> posts;
     // 검색어와 카테고리가 모두 없는 경우: 모든 포스트를 페이징하여 반환
@@ -42,17 +40,18 @@ public class PostService {
     else {
       posts = postRepository.search(searchTerm, pageable);
     }
-    return posts.map(postConverter::convertToResponse);
+    return posts.map(PostResponse::new);
   }
 
+  @Transactional(readOnly = true)
   public PostResponse getPostById(Long id) {
     Post post = postRepository.findById(id)
         .orElseThrow(() -> new PostException(PostErrorType.POST_NOT_FOUND));
-    return postConverter.convertToResponse(post);
+    return new PostResponse(post);
   }
 
   public Post createPost(PostRequest postRequest) {
-    Post post = postConverter.convertToEntity(postRequest);
+    Post post = postRequest.toEntity(postRequest);
     return postRepository.save(post);
   }
 
