@@ -13,7 +13,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import org.example.blogproject.global.exceptions.PostException;
+import org.example.blogproject.global.exceptions.PostNotFoundException;
 import org.example.blogproject.model.entity.Post;
 import org.example.blogproject.model.request.PostForPostRequest;
 import org.example.blogproject.model.response.PostForGetResponse;
@@ -101,7 +101,7 @@ public class PostServiceTest {
     when(postRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     // When & Then
-    PostException exception = assertThrows(PostException.class, () -> postService.getPostById(1L));
+    PostNotFoundException exception = assertThrows(PostNotFoundException.class, () -> postService.getPostById(1L));
     assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     assertEquals("해당 ID의 게시물을 찾을 수 없습니다.", exception.getStatusText());
     verify(postRepository, times(1)).findById(anyLong());
@@ -141,7 +141,7 @@ public class PostServiceTest {
     when(postRepository.findById(anyLong())).thenReturn(Optional.empty());
 
     // When & Then
-    PostException exception = assertThrows(PostException.class, () -> postService.updatePost(1L, postRequest));
+    PostNotFoundException exception = assertThrows(PostNotFoundException.class, () -> postService.updatePost(1L, postRequest));
     assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     assertEquals("해당 ID의 게시물을 찾을 수 없습니다.", exception.getStatusText());
     verify(postRepository, times(1)).findById(anyLong());
@@ -166,7 +166,7 @@ public class PostServiceTest {
     when(postRepository.existsById(anyLong())).thenReturn(false);
 
     // When & Then
-    PostException exception = assertThrows(PostException.class, () -> postService.deletePost(1L));
+    PostNotFoundException exception = assertThrows(PostNotFoundException.class, () -> postService.deletePost(1L));
     assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
     assertEquals("해당 ID의 게시물을 찾을 수 없습니다.", exception.getStatusText());
     verify(postRepository, times(1)).existsById(anyLong());

@@ -1,7 +1,7 @@
 package org.example.blogproject.service;
 
 import java.util.Optional;
-import org.example.blogproject.global.exceptions.PostException;
+import org.example.blogproject.global.exceptions.PostNotFoundException;
 import org.example.blogproject.global.types.PostErrorType;
 import org.example.blogproject.model.entity.Post;
 import org.example.blogproject.model.request.PostForPostRequest;
@@ -46,7 +46,7 @@ public class PostService {
   @Transactional(readOnly = true)
   public PostForGetResponse getPostById(Long id) {
     Post post = postRepository.findById(id)
-        .orElseThrow(() -> new PostException(PostErrorType.POST_NOT_FOUND));
+        .orElseThrow(PostNotFoundException::new);
     return new PostForGetResponse(post);
   }
 
@@ -64,7 +64,7 @@ public class PostService {
       existingPost.updateEntity(request);
       return existingPost;
     } else {
-      throw new PostException(PostErrorType.POST_NOT_FOUND);
+      throw new PostNotFoundException();
     }
   }
 
@@ -72,7 +72,7 @@ public class PostService {
     if (postRepository.existsById(id)) {
       postRepository.deleteById(id);
     } else {
-      throw new PostException(PostErrorType.POST_NOT_FOUND);
+      throw new PostNotFoundException();
     }
   }
 }

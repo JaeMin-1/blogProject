@@ -1,7 +1,8 @@
 package org.example.blogproject.global.utils;
 
 import java.util.List;
-import org.example.blogproject.global.exceptions.PostException;
+import org.example.blogproject.global.exceptions.InvalidDataException;
+import org.example.blogproject.global.exceptions.InvalidSortFieldException;
 import org.example.blogproject.global.types.PostErrorType;
 import org.example.blogproject.model.request.PostForPostRequest;
 
@@ -12,7 +13,7 @@ public class ValidationUtil {
         postRequest.content() == null || postRequest.content().isEmpty() ||
         postRequest.author() == null || postRequest.author().isEmpty() ||
         postRequest.category() == null || postRequest.category().isEmpty()) {
-      throw new PostException(PostErrorType.INVALID_DATA);
+      throw new InvalidDataException();
     }
   }
 
@@ -20,7 +21,7 @@ public class ValidationUtil {
 
   public static void validateSortProperty(String sortBy) {
     if (!ALLOWED_SORT_PROPERTIES.contains(sortBy)) {
-      throw new PostException(PostErrorType.INVALID_SORT_FILED_ERROR);
+      throw new InvalidSortFieldException();
     }
   }
 
