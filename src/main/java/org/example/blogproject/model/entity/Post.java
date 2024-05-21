@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.blogproject.global.model.entity.TimeStamp;
-import org.example.blogproject.model.request.PostRequest;
+import org.example.blogproject.model.request.PostForPostRequest;
 
 @Getter
 @AllArgsConstructor
@@ -45,7 +45,7 @@ public class Post extends TimeStamp {
     this.category = category;
   }
 
-  public void updateEntity(PostRequest postRequest) {
+  public void updateEntity(PostForPostRequest postRequest) {
     this.title = postRequest.title();
     this.content = postRequest.content();
     this.author = postRequest.author();

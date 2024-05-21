@@ -4,8 +4,8 @@ import java.util.Optional;
 import org.example.blogproject.global.exceptions.PostException;
 import org.example.blogproject.global.types.PostErrorType;
 import org.example.blogproject.model.entity.Post;
-import org.example.blogproject.model.request.PostRequest;
-import org.example.blogproject.model.response.PostResponse;
+import org.example.blogproject.model.request.PostForPostRequest;
+import org.example.blogproject.model.response.PostForGetResponse;
 import org.example.blogproject.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +22,7 @@ public class PostService {
   }
 
   @Transactional(readOnly = true)
-  public Page<PostResponse> getAllPosts(Pageable pageable, String searchTerm, String category) {
+  public Page<PostForGetResponse> getAllPosts(Pageable pageable, String searchTerm, String category) {
     Page<Post> posts;
     // 검색어와 카테고리가 모두 없는 경우: 모든 포스트를 페이징하여 반환
     if (searchTerm == null && category == null) {
@@ -40,28 +40,28 @@ public class PostService {
     else {
       posts = postRepository.search(searchTerm, pageable);
     }
-    return posts.map(PostResponse::new);
+    return posts.map(PostForGetResponse::new);
   }
 
   @Transactional(readOnly = true)
-  public PostResponse getPostById(Long id) {
+  public PostForGetResponse getPostById(Long id) {
     Post post = postRepository.findById(id)
         .orElseThrow(() -> new PostException(PostErrorType.POST_NOT_FOUND));
-    return new PostResponse(post);
+    return new PostForGetResponse(post);
   }
 
-  public Post createPost(PostRequest postRequest) {
+  public Post createPost(PostForPostRequest postRequest) {
     Post post = postRequest.toEntity(postRequest);
     return postRepository.save(post);
   }
 
   @Transactional
-  public Post updatePost(Long id, PostRequest postRequest) {
+  public Post updatePost(Long id, PostForPostRequest request) {
     Optional<Post> optionalPost = postRepository.findById(id);
 
     if (optionalPost.isPresent()) {
       Post existingPost = optionalPost.get();
-      existingPost.updateEntity(postRequest);
+      existingPost.updateEntity(request);
       return existingPost;
     } else {
       throw new PostException(PostErrorType.POST_NOT_FOUND);

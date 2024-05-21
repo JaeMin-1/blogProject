@@ -1,17 +1,22 @@
 package org.example.blogproject.service;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import org.example.blogproject.global.exceptions.PostException;
 import org.example.blogproject.model.entity.Post;
-import org.example.blogproject.model.request.PostRequest;
-import org.example.blogproject.model.response.PostResponse;
+import org.example.blogproject.model.request.PostForPostRequest;
+import org.example.blogproject.model.response.PostForGetResponse;
 import org.example.blogproject.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,8 +38,8 @@ public class PostServiceTest {
   private PostService postService;
 
   private Post post;
-  private PostRequest postRequest;
-  private PostResponse postResponse;
+  private PostForPostRequest postRequest;
+  private PostForGetResponse postResponse;
 
   @BeforeEach
   public void setUp() {
@@ -42,13 +47,13 @@ public class PostServiceTest {
 
     post = new Post(1L,"Title", "Content", "Author", "Category", 0);
 
-    postRequest = new PostRequest(
+    postRequest = new PostForPostRequest(
         "Updated Title",
         "Updated Content",
         "Updated Author",
         "Updated Category");
 
-    postResponse = new PostResponse(
+    postResponse = new PostForGetResponse(
         post.getId(),
         post.getTitle(),
         post.getContent(),
@@ -70,7 +75,7 @@ public class PostServiceTest {
     when(postRepository.findAll(pageable)).thenReturn(page);
 
     // Then
-    Page<PostResponse> result = postService.getAllPosts(pageable, null, null);
+    Page<PostForGetResponse> result = postService.getAllPosts(pageable, null, null);
 
     assertEquals(1, result.getTotalElements());
     verify(postRepository, times(1)).findAll(pageable);
@@ -82,7 +87,7 @@ public class PostServiceTest {
     when(postRepository.findById(anyLong())).thenReturn(Optional.of(post));
 
     // When
-    PostResponse result = postService.getPostById(1L);
+    PostForGetResponse result = postService.getPostById(1L);
 
     // Then
     assertNotNull(result);

@@ -3,7 +3,7 @@ package org.example.blogproject.model.response;
 import java.time.LocalDateTime;
 import org.example.blogproject.model.entity.Post;
 
-public record PostResponse(
+public record PostForGetResponse(
     Long id,
     String title,
     String content,
@@ -13,7 +13,7 @@ public record PostResponse(
     LocalDateTime createdAt,
     LocalDateTime modifiedAt
 ) {
-  public PostResponse(Post post) {
+  public PostForGetResponse(Post post) {
     this(
         post.getId(),
         post.getTitle(),
