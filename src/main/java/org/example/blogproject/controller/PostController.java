@@ -1,7 +1,7 @@
 package org.example.blogproject.controller;
 
-import org.example.blogproject.entity.Post;
-import org.example.blogproject.entity.request.PostRequest;
+import org.example.blogproject.model.entity.Post;
+import org.example.blogproject.model.request.PostRequest;
 import org.example.blogproject.global.utils.ResponseUtil;
 import org.example.blogproject.global.utils.ValidationUtil;
 import org.example.blogproject.service.PostService;
@@ -37,7 +37,7 @@ public class PostController {
     Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
     Pageable pageable = PageRequest.of(page, size, sort);
 
-    return postService.getAllPosts(sortBy, pageable, searchTerm, category);
+    return postService.getAllPosts(pageable, searchTerm, category);
   }
 
   @PostMapping

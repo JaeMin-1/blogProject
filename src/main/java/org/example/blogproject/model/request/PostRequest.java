@@ -1,4 +1,4 @@
-package org.example.blogproject.entity.request;
+package org.example.blogproject.model.request;
 
 public record PostRequest(
     String title,
